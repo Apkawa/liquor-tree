@@ -209,7 +209,7 @@ export default class Tree {
         .catch(this.options.onFetchError)
     }
 
-    if (false === parseData) {
+    if (parseData === false) {
       return result
     }
 

@@ -83,14 +83,16 @@
             deletion: true,
             dnd: {
               onDragStart(node) {
-                return node.data.isNotDraggable !== true
+                return node[0].data.isNotDraggable !== true
               },
-              onDragOn(targetNode, destinationNode) {
-                console.log('onDragOn', targetNode.text, destinationNode.text)
+              onDragOn(targetNodes, destinationNode, dropPosition) {
+                const targetNode = targetNodes[0]
+                console.log('onDragOn', targetNode.text, destinationNode.text, dropPosition)
                 return destinationNode.data.isNotDroppable !== true
               },
-              onDragFinish(targetNode, destinationNode) {
-                console.log('onDragFinish', targetNode.text, destinationNode.text)
+              onDragFinish(targetNodes, destinationNode, dropPosition) {
+                const targetNode = targetNodes[0]
+                console.log('onDragFinish', targetNode.text, destinationNode.text, dropPosition)
                 return destinationNode.data.isNotDroppable !== true
               }
             },
