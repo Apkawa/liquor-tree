@@ -182,8 +182,8 @@
         if (!this.options.dnd) {
           return
         }
-
-        this.tree.vm.startDragging(this.node, event)
+        const nodes = this.tree.selected()
+        this.tree.vm.startDragging(nodes, event)
       }
     }
   }

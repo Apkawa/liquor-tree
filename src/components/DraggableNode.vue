@@ -1,6 +1,10 @@
 <template>
   <div class="tree-dragnode" :style="style">
-    {{ target.node.text }}
+    <ul>
+      <li v-for="n in nodes">
+        {{ n.text }}
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -9,6 +13,9 @@
     name: 'DragNode',
     props: ['target'],
     computed: {
+      nodes() {
+        return this.target.nodes.map(n => n)
+      },
       style() {
         if (undefined === this.target.top) {
           return 'display: none'

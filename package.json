@@ -6,12 +6,13 @@
   "library": "LiquorTree",
   "homepage": "https://amsik.github.io/liquor-tree/",
   "scripts": {
-    "dev": "cross-env NODE_ENV=development rollup -w -c rollup.config.js",
-    "build": "cross-env NODE_ENV=production rollup -c rollup.config.js",
-    "build:watch": "cross-env NODE_ENV=production rollup -w -c rollup.config.js",
+    "dev": "npm run clean && cross-env NODE_ENV=development rollup -w -c rollup.config.js",
+    "build": "npm run clean && cross-env NODE_ENV=production rollup -c rollup.config.js",
+    "build:watch": "npm run clean && cross-env NODE_ENV=production rollup -w -c rollup.config.js",
     "lint": "eslint --fix src test",
     "test": "npm run lint && npm run unit",
     "unit": "jest",
+    "clean": "rm -rf dist/",
     "storybook": "start-storybook -p 9001 -c ./docs/storybook -s ./docs/storybook/public"
   },
   "repository": {

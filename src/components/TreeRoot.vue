@@ -37,7 +37,6 @@
   import DraggableNode from '@/components/DraggableNode'
   import TreeMixin from '@/mixins/TreeMixin'
   import TreeDnd from '@/mixins/DndMixin'
-  import Tree from '@/lib/Tree'
 
   const defaults = {
     direction: 'ltr',

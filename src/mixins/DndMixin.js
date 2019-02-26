@@ -132,18 +132,17 @@ export default {
       e.preventDefault()
     },
 
-    startDragging (node, event) {
+    startDragging (nodes, event) {
       // TODO drag multiple
-      const dragNodes = [node]
-      if (!node.isDraggable()) {
+      if (nodes.map(n => n.isDraggable()).filter(b => !b).length > 0) {
         return
       }
 
-      callDndCb([dragNodes, event], this.tree.options.dnd, 'onDragStart')
+      callDndCb([nodes, event], this.tree.options.dnd, 'onDragStart')
         .then(result => {
           if (result !== false) {
             this.$$startDragPosition = [event.clientX, event.clientY]
-            this.$$possibleDragNode = node
+            this.$$possibleDragNode = nodes
             this.initDragListeners()
           }
         })
@@ -163,14 +162,14 @@ export default {
         }
 
         if (this.draggableNode) {
-          this.draggableNode.node.state('dragging', false)
+          this.draggableNode.nodes.forEach(node => node.state('dragging', false))
         }
 
         if (this.$$dropDestination && this.tree.isNode(this.$$dropDestination) && this.$$dropDestination.vm) {
           updateHelperClasses(this.$$dropDestination.vm.$el, null)
 
           // TODO drag multiple
-          const dragNodes = [this.draggableNode.node]
+          const dragNodes = this.draggableNode.nodes
           const $$dropDestination = this.$$dropDestination
           callDndCb(
             [dragNodes, $$dropDestination, dropPosition, e],
@@ -180,7 +179,7 @@ export default {
             .then(cbResult => {
               if (cbResult !== false && !(!$$dropDestination.isDropable() && dropPosition === DropPosition.ON || !dropPosition)) {
                 // TODO handle multiple
-                dragNodes[0].finishDragging($$dropDestination, dropPosition)
+                dragNodes.forEach(node => node.finishDragging($$dropDestination, dropPosition))
               }
               this.$$dropDestination = null
             })
@@ -198,14 +197,13 @@ export default {
         }
 
         if (this.$$possibleDragNode) {
-          if (this.$$possibleDragNode.startDragging() === false) {
+          if (this.$$possibleDragNode[0].startDragging() === false) {
             removeListeners()
             this.$$possibleDragNode = null
-
             return
           }
 
-          this.$set(this, 'draggableNode', { node: this.$$possibleDragNode, left: 0, top: 0 })
+          this.$set(this, 'draggableNode', { nodes: this.$$possibleDragNode, left: 0, top: 0 })
           this.$$possibleDragNode = null
         }
 
@@ -216,10 +214,11 @@ export default {
 
         clearDropClasses(this.$el)
 
+        const dragNodes = this.draggableNode.nodes
         if (dropDestination) {
           const dropDestinationId = dropDestination.getAttribute('data-id')
 
-          if (this.draggableNode.node.id === dropDestinationId) {
+          if (dragNodes[0].id === dropDestinationId) {
             return
           }
 
@@ -227,10 +226,11 @@ export default {
             this.$$dropDestination = this.tree.getNodeById(dropDestinationId)
           }
 
-          if (this.$$dropDestination && this.draggableNode.node) {
+          if (this.$$dropDestination && dragNodes.length) {
             const path = this.$$dropDestination.getPath()
-
-            if (path.includes(this.draggableNode.node)) {
+            // FIXME check logic?
+            const isDropDestination = dragNodes.map(n => path.includes(n)).filter(Boolean).length
+            if (isDropDestination) {
               this.$$dropDestination = null
               return
             }
@@ -238,7 +238,6 @@ export default {
 
           dropPosition = getDropPosition(e, dropDestination)
           // TODO drag multiple
-          const dragNodes = [this.draggableNode.node]
           callDndCb(
             [dragNodes, this.$$dropDestination, dropPosition, e],
             this.tree.options.dnd,
