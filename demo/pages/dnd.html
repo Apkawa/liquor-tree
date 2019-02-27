@@ -123,6 +123,12 @@
               { MY_TEXT: 'JavaScript Code Style', OPTIONS: { selected: true } },
               { MY_TEXT: 'MVC Pattern (NOT DROPABLE)', OPTIONS: {dropable: false} },
               { MY_TEXT: 'MVP Pattern (NOT DROPABLE)', OPTIONS: {dropable: false} },
+              { MY_TEXT: '(NOT DROPABLE sub tree)',
+                OPTIONS: {dropable: false},
+                KIDS: [
+                  { MY_TEXT: '(NOT DROPABLE child)', OPTIONS: {dropable: false}}
+                ],
+              },
               { MY_TEXT: 'MVVM Pattern' },
               { MY_TEXT: 'The Good Parts', KIDS: [
                 { MY_TEXT: 'OBJECT ORIENTED', OPTIONS: { checked: true }  },

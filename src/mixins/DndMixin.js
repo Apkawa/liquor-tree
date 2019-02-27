@@ -244,13 +244,20 @@ export default {
             'onDragOn'
           )
             .then(cbResult => {
-              const isDropable = this.$$dropDestination.isDropable() && cbResult !== false
+              const dropTarget = this.$$dropDestination
+
+              let isDropable = dropTarget.isDropable() && cbResult
+              if (dropTarget.parent && dropPosition !== DropPosition.ON && !dropTarget.parent.isDropable()) {
+                // Permit drop into children
+                isDropable = false
+                dropPosition = null
+              }
+              console.log(dropTarget.isDropable(), dropTarget.parent.isDropable(), isDropable)
               if (!isDropable && dropPosition === DropPosition.ON) {
                 dropPosition = null
               }
+              updateHelperClasses(dropDestination, dropPosition)
             })
-
-          updateHelperClasses(dropDestination, dropPosition)
         }
       }
 
