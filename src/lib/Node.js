@@ -213,6 +213,13 @@ export default class Node {
     return this.state('checked')
   }
 
+  siblings() {
+    if (this.isRoot()) {
+      return this.tree.model
+    }
+    return this.parent.children
+  }
+
   _check() {
     this.tree.check(this)
     this.state('checked', true)
@@ -255,8 +262,9 @@ export default class Node {
       )
       this._check()
       if (isShiftCheckes) {
-        const currentIndex = this.parent.children.indexOf(this)
-        const lastCheckedIndex = this.parent.children.indexOf(lastCheckedNode)
+        const siblings = this.siblings()
+        const currentIndex = siblings.indexOf(this)
+        const lastCheckedIndex = siblings.indexOf(lastCheckedNode)
         let start = lastCheckedIndex
 
         let end = currentIndex
@@ -264,7 +272,7 @@ export default class Node {
           start = currentIndex
           end = lastCheckedIndex
         }
-        this.parent.children.forEach((node, index) => {
+        siblings.forEach((node, index) => {
           if (start <= index && index <= end)  {
             if (!node.checked()) {
               node._check()
@@ -306,8 +314,9 @@ export default class Node {
       )
       this._uncheck()
       if (isShiftCheckes) {
-        const currentIndex = this.parent.children.indexOf(this)
-        const lastIndex = this.parent.children.indexOf(lastUncheckedNode)
+        const siblings = this.siblings()
+        const currentIndex = siblings.indexOf(this)
+        const lastIndex = siblings.indexOf(lastUncheckedNode)
         let start = lastIndex
 
         let end = currentIndex
@@ -316,7 +325,7 @@ export default class Node {
           end = lastIndex
         }
 
-        this.parent.children.forEach((node, index) => {
+        siblings.forEach((node, index) => {
           if (start <= index && index <= end)  {
             if (node.checked()) {
               node._uncheck()
