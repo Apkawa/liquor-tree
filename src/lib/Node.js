@@ -265,7 +265,7 @@ export default class Node {
           end = lastCheckedIndex
         }
         this.parent.children.forEach((node, index) => {
-          if (start <= index <= end)  {
+          if (start <= index && index <= end)  {
             if (!node.checked()) {
               node._check()
             }
@@ -275,7 +275,7 @@ export default class Node {
     }
 
     this.tree.lastCheckedNode = this
-
+    this.tree.lastUncheckedNode = null
     return this
   }
 
@@ -317,7 +317,7 @@ export default class Node {
         }
 
         this.parent.children.forEach((node, index) => {
-          if (start <= index <= end)  {
+          if (start <= index && index <= end)  {
             if (node.checked()) {
               node._uncheck()
             }
@@ -328,6 +328,7 @@ export default class Node {
     }
 
     this.tree.lastUncheckedNode = this
+    this.tree.lastCheckedNode = null
     return this
   }
 
