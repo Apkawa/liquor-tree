@@ -92,7 +92,9 @@
       tag: {
         type: String,
         default: 'div'
-      }
+      },
+      lastCheckedNode: null,
+      lastUncheckedNode: null,
     },
 
     watch: {

@@ -213,7 +213,18 @@ export default class Node {
     return this.state('checked')
   }
 
-  check () {
+  _check() {
+    this.tree.check(this)
+    this.state('checked', true)
+    this.$emit('checked')
+  }
+  _uncheck() {
+    this.tree.uncheck(this)
+    this.state('checked', false)
+    this.$emit('unchecked')
+  }
+
+  check ({shift = false} = {}) {
     if (this.checked() || this.disabled()) {
       return this
     }
@@ -227,10 +238,7 @@ export default class Node {
         node.state('indeterminate', false)
 
         if (!node.checked()) {
-          this.tree.check(node)
-
-          node.state('checked', true)
-          node.$emit('checked')
+          node._check()
         }
       })
 
@@ -238,16 +246,40 @@ export default class Node {
         this.parent.refreshIndeterminateState()
       }
     } else {
-      this.tree.check(this)
+      const {lastCheckedNode} = this.tree
+      const isShiftCheckes = (
+        shift
+        && lastCheckedNode
+        && lastCheckedNode !== this
+        && lastCheckedNode.parent === this.parent
+      )
+      this._check()
+      if (isShiftCheckes) {
+        const currentIndex = this.parent.children.indexOf(this)
+        const lastCheckedIndex = this.parent.children.indexOf(lastCheckedNode)
+        let start = lastCheckedIndex
 
-      this.state('checked', true)
-      this.$emit('checked')
+        let end = currentIndex
+        if (currentIndex < lastCheckedIndex) {
+          start = currentIndex
+          end = lastCheckedIndex
+        }
+        this.parent.children.forEach((node, index) => {
+          if (start <= index <= end)  {
+            if (!node.checked()) {
+              node._check()
+            }
+          }
+        })
+      }
     }
+
+    this.tree.lastCheckedNode = this
 
     return this
   }
 
-  uncheck () {
+  uncheck ({shift=false}={}) {
     if (!this.indeterminate() && !this.checked() || this.disabled()) {
       return this
     }
@@ -257,10 +289,7 @@ export default class Node {
         node.state('indeterminate', false)
 
         if (node.checked()) {
-          this.tree.uncheck(node)
-
-          node.state('checked', false)
-          node.$emit('unchecked')
+          node._uncheck()
         }
       })
 
@@ -268,12 +297,37 @@ export default class Node {
         this.parent.refreshIndeterminateState()
       }
     } else {
-      this.tree.uncheck(this)
+      const {lastUncheckedNode} = this.tree
+      const isShiftCheckes = (
+        shift
+        && lastUncheckedNode
+        && lastUncheckedNode !== this
+        && lastUncheckedNode.parent === this.parent
+      )
+      this._uncheck()
+      if (isShiftCheckes) {
+        const currentIndex = this.parent.children.indexOf(this)
+        const lastIndex = this.parent.children.indexOf(lastUncheckedNode)
+        let start = lastIndex
 
-      this.state('checked', false)
-      this.$emit('unchecked')
+        let end = currentIndex
+        if (currentIndex < lastIndex) {
+          start = currentIndex
+          end = lastIndex
+        }
+
+        this.parent.children.forEach((node, index) => {
+          if (start <= index <= end)  {
+            if (node.checked()) {
+              node._uncheck()
+            }
+          }
+        })
+      }
+
     }
 
+    this.tree.lastUncheckedNode = this
     return this
   }
 

@@ -99,11 +99,13 @@
         this.node.select()
       },
 
-      check() {
+      check(event) {
+        const {shiftKey} = event
+
         if (this.node.checked()) {
-          this.node.uncheck()
+          this.node.uncheck({shift: shiftKey})
         } else {
-          this.node.check()
+          this.node.check({shift: shiftKey})
         }
       },
 
