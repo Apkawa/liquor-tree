@@ -197,7 +197,7 @@ export default {
         }
 
         if (this.$$possibleDragNode) {
-          if (this.$$possibleDragNode[0].startDragging() === false) {
+          if (! this.$$possibleDragNode[0] || this.$$possibleDragNode[0].startDragging() === false) {
             removeListeners()
             this.$$possibleDragNode = null
             return

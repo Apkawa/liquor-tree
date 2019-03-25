@@ -18,6 +18,7 @@ const banner = `
 
 const config = {
   input: 'src/main.js',
+  sourceMap: true,
   output: [
     {
       file: pkg.module,
@@ -44,7 +45,7 @@ const config = {
 }
 
 if ('production' == process.env.NODE_ENV) {
-  config.output.forEach(c => (c.sourcemap = false))
+  // config.output.forEach(c => (c.sourcemap = false))
   config.plugins.push(uglify({
     output: {
       comments: function(node, comment) {

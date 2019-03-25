@@ -1,5 +1,5 @@
 {
-  "name": "liquor-tree",
+  "name": "@apkawa/liquor-tree",
   "description": "A Vue.js tree component.",
   "version": "0.2.59",
   "author": "Kostiantyn <phlyze@gmail.com>",
@@ -16,7 +16,8 @@
     "storybook": "start-storybook -p 9001 -c ./docs/storybook -s ./docs/storybook/public",
     "prepublish": "npm run build",
     "v": "npm version patch",
-    "v2": "npm version minor"
+    "v2": "npm version minor",
+    "p": "npm publish --access public"
   },
   "repository": {
     "type": "git",
