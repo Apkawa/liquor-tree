@@ -13,7 +13,10 @@
     "test": "npm run lint && npm run unit",
     "unit": "jest",
     "clean": "rm -rf dist/",
-    "storybook": "start-storybook -p 9001 -c ./docs/storybook -s ./docs/storybook/public"
+    "storybook": "start-storybook -p 9001 -c ./docs/storybook -s ./docs/storybook/public",
+    "prepublish": "npm run build",
+    "v": "npm version patch",
+    "v2": "npm version minor"
   },
   "repository": {
     "type": "git",
